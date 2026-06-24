@@ -359,39 +359,46 @@ function renderCalendar() {
     num.textContent = d;
     cell.appendChild(num);
 
-    // Middle: a small "icon + name" chip for anyone busy/maybe that day,
-    // so you can see at a glance WHO is busy (not just that someone is).
-    if (t.busyPeople.length) {
+    // Middle: chips showing who's busy/maybe that day.
+    //  - "My calendar": ONLY your own status (your private view).
+    //  - "Everyone": a chip per person, so you see WHO is busy.
+    const myEntry = currentMemberId ? entryFor(currentMemberId, date) : null;
+    const chips =
+      viewMode === "mine"
+        ? (myEntry ? [{ member: null, entry: myEntry }] : [])
+        : t.busyPeople;
+
+    if (chips.length) {
       const list = document.createElement("div");
       list.className = "day-people";
-      t.busyPeople.slice(0, 5).forEach(({ member, entry }) => {
+      chips.slice(0, 5).forEach(({ member, entry }) => {
         const r = REASON_BY_ID[entry.reason];
         const chip = document.createElement("span");
         chip.className = "who-chip " + entry.status;
-        chip.title = `${member.name}: ${STATUS_LABEL[entry.status]}${r ? " — " + r.label : ""}`;
+        const label = member ? member.name : (r ? r.label : STATUS_LABEL[entry.status]);
+        chip.title = `${member ? member.name + ": " : ""}${STATUS_LABEL[entry.status]}${r ? " — " + r.label : ""}`;
 
         const ic = document.createElement("span");
         ic.className = "ic";
         ic.textContent = r ? r.icon : (entry.status === "busy" ? "⛔" : "❔");
         const nm = document.createElement("span");
         nm.className = "nm";
-        nm.textContent = member.name;
+        nm.textContent = label;
 
         chip.append(ic, nm);
         list.appendChild(chip);
       });
-      if (t.busyPeople.length > 5) {
+      if (chips.length > 5) {
         const more = document.createElement("span");
         more.className = "who-chip more";
-        more.textContent = "+" + (t.busyPeople.length - 5) + " more";
+        more.textContent = "+" + (chips.length - 5) + " more";
         list.appendChild(more);
       }
       cell.appendChild(list);
     }
 
-    // Bottom: free count. Always shown in "Everyone" mode; in "My
-    // calendar" mode only when there's a conflict worth flagging.
-    if (t.total > 0 && (viewMode === "everyone" || t.busy > 0 || t.maybe > 0)) {
+    // Bottom: group free count — only meaningful in "Everyone" mode.
+    if (t.total > 0 && viewMode === "everyone") {
       const foot = document.createElement("div");
       foot.className = "day-foot";
       foot.textContent = `${t.free}/${t.total} free`;
