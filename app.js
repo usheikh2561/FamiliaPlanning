@@ -326,25 +326,34 @@ function renderCalendar() {
     num.textContent = d;
     cell.appendChild(num);
 
-    // Middle: little reason icons for anyone busy/maybe that day.
+    // Middle: a small "icon + name" chip for anyone busy/maybe that day,
+    // so you can see at a glance WHO is busy (not just that someone is).
     if (t.busyPeople.length) {
-      const icons = document.createElement("div");
-      icons.className = "day-icons";
-      t.busyPeople.slice(0, 4).forEach(({ member, entry }) => {
-        const span = document.createElement("span");
-        span.className = "rs " + entry.status;
+      const list = document.createElement("div");
+      list.className = "day-people";
+      t.busyPeople.slice(0, 5).forEach(({ member, entry }) => {
         const r = REASON_BY_ID[entry.reason];
-        span.textContent = r ? r.icon : (entry.status === "busy" ? "⛔" : "❔");
-        span.title = `${member.name}: ${STATUS_LABEL[entry.status]}${r ? " — " + r.label : ""}`;
-        icons.appendChild(span);
+        const chip = document.createElement("span");
+        chip.className = "who-chip " + entry.status;
+        chip.title = `${member.name}: ${STATUS_LABEL[entry.status]}${r ? " — " + r.label : ""}`;
+
+        const ic = document.createElement("span");
+        ic.className = "ic";
+        ic.textContent = r ? r.icon : (entry.status === "busy" ? "⛔" : "❔");
+        const nm = document.createElement("span");
+        nm.className = "nm";
+        nm.textContent = member.name;
+
+        chip.append(ic, nm);
+        list.appendChild(chip);
       });
-      if (t.busyPeople.length > 4) {
+      if (t.busyPeople.length > 5) {
         const more = document.createElement("span");
-        more.className = "rs more";
-        more.textContent = "+" + (t.busyPeople.length - 4);
-        icons.appendChild(more);
+        more.className = "who-chip more";
+        more.textContent = "+" + (t.busyPeople.length - 5) + " more";
+        list.appendChild(more);
       }
-      cell.appendChild(icons);
+      cell.appendChild(list);
     }
 
     // Bottom: free count. Always shown in "Everyone" mode; in "My
@@ -406,12 +415,50 @@ function openEditor(date) {
   endInput.value = date;
 
   toggleReasonField();
+  renderDayRoster(date);
   document.getElementById("editor-overlay").classList.remove("hidden");
 }
 
 function closeEditor() {
   document.getElementById("editor-overlay").classList.add("hidden");
   editDate = null;
+}
+
+// Read-only list inside the pop-up: shows what everyone chose for this
+// day, in plain words ("Mom — Busy · Work"), so the "why" is clear.
+function renderDayRoster(date) {
+  const box = document.getElementById("day-roster");
+  box.innerHTML = "";
+  const t = tallyDate(date);
+  if (t.total === 0) return;
+
+  const head = document.createElement("div");
+  head.className = "roster-head";
+  head.textContent = `Everyone on this day — ${t.free}/${t.total} free`;
+  box.appendChild(head);
+
+  if (t.busyPeople.length === 0) {
+    const line = document.createElement("div");
+    line.className = "roster-line free";
+    line.textContent = "🎉 Everyone is free!";
+    box.appendChild(line);
+    return;
+  }
+
+  for (const { member, entry } of t.busyPeople) {
+    const r = REASON_BY_ID[entry.reason];
+    const line = document.createElement("div");
+    line.className = "roster-line " + entry.status;
+
+    const ic = document.createElement("span");
+    ic.className = "ic";
+    ic.textContent = r ? r.icon : (entry.status === "busy" ? "⛔" : "❔");
+    const txt = document.createElement("span");
+    txt.textContent = `${member.name} — ${STATUS_LABEL[entry.status]}${r ? " · " + r.label : ""}`;
+
+    line.append(ic, txt);
+    box.appendChild(line);
+  }
 }
 
 // Reason only matters when you're not free.

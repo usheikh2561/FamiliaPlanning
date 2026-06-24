@@ -140,11 +140,30 @@ button.ghost:hover { background: #e0e7ff; }
 .day.group-none    { background: var(--busy-bg); }
 
 .day-num { font-weight: 700; font-size: 0.85rem; }
-.day-icons { display: flex; flex-wrap: wrap; gap: 1px; line-height: 1; }
-.day-icons .rs { font-size: 0.95rem; }
-.day-icons .rs.maybe { opacity: 0.6; }
-.day-icons .rs.more { font-size: 0.7rem; color: var(--muted); font-weight: 600; }
+
+/* "icon + name" chips showing who is busy, right in the day cell */
+.day-people { display: flex; flex-direction: column; gap: 2px; }
+.who-chip {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 0.68rem; line-height: 1.25; font-weight: 600;
+  padding: 1px 4px; border-radius: 5px; max-width: 100%;
+}
+.who-chip .ic { font-size: 0.82rem; flex: none; }
+.who-chip .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.who-chip.busy  { background: var(--busy-bg);  color: var(--busy); }
+.who-chip.maybe { background: var(--maybe-bg); color: var(--maybe); }
+.who-chip.more  { background: transparent; color: var(--muted); }
+
 .day-foot { margin-top: auto; font-size: 0.68rem; color: var(--muted); font-weight: 600; }
+
+/* Read-only roster inside the day editor pop-up */
+.day-roster { margin-top: 0.2rem; border-top: 1px solid var(--border); padding-top: 0.7rem; }
+.roster-head { font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 0.4rem; }
+.roster-line { display: flex; align-items: center; gap: 0.45rem; font-size: 0.9rem; padding: 0.12rem 0; }
+.roster-line .ic { font-size: 1.05rem; flex: none; }
+.roster-line.busy  { color: var(--busy); }
+.roster-line.maybe { color: var(--maybe); }
+.roster-line.free  { color: var(--free); }
 
 /* ---------- Legend ---------- */
 .legend-block { margin-bottom: 0.8rem; }
