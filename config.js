@@ -13,12 +13,9 @@
 //  It walks you through creating a free Supabase project and tells
 //  you exactly what to paste below.
 //
-//  Note: the "anon key" below is SAFE to be public. Supabase
+//  Note: the publishable key below is SAFE to be public. Supabase
 //  designed it that way; your data is protected by database rules.
 // ============================================================
 
-export const SUPABASE_URL = "";      // e.g. "https://abcdxyz.supabase.co"
-export const SUPABASE_ANON_KEY = ""; // the long "anon public" key from Supabase
-
-// How many upcoming weekends to show in the grid. Change if you like.
-export const WEEKENDS_TO_SHOW = 12;
+export const SUPABASE_URL = "https://zsgvmjclbxzsiqkurofp.supabase.co";
+export const SUPABASE_ANON_KEY = "sb_publishable_teuMpRB_v9WldoUxXIY_Lw_s-TUwGR-";
