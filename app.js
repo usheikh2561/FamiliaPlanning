@@ -408,6 +408,9 @@ function openEditor(date) {
   statusSel.value = existing ? existing.status : "free";
   reasonSel.value = existing && existing.reason ? existing.reason : "work";
 
+  // "Remove" only makes sense when this day already has a mark.
+  document.getElementById("editor-clear").style.display = existing ? "" : "none";
+
   // End-date field defaults to this same day (= single day). Pick a
   // later date to mark a whole trip in one go.
   const endInput = document.getElementById("editor-end");
@@ -608,6 +611,11 @@ function wireUpControls() {
   document.getElementById("editor-status").addEventListener("change", toggleReasonField);
   document.getElementById("editor-save").addEventListener("click", saveEditor);
   document.getElementById("editor-cancel").addEventListener("click", closeEditor);
+  // "Remove" = set the day (or range) back to Free, then save.
+  document.getElementById("editor-clear").addEventListener("click", () => {
+    document.getElementById("editor-status").value = "free";
+    saveEditor();
+  });
   // Click the dark backdrop (but not the white modal) to close.
   document.getElementById("editor-overlay").addEventListener("click", (e) => {
     if (e.target.id === "editor-overlay") closeEditor();
