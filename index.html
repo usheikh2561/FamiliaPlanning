@@ -54,6 +54,11 @@
       </div>
       <p class="hint" id="cal-hint">Click any day to set your status. Default is "Free" until you mark otherwise.</p>
 
+      <div class="view-toggle" id="view-toggle">
+        <button type="button" data-mode="mine" class="active">🧍 My calendar</button>
+        <button type="button" data-mode="everyone">👨‍👩‍👧‍👦 Everyone</button>
+      </div>
+
       <div class="cal-weekdays">
         <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
         <span>Thu</span><span>Fri</span><span>Sat</span>
@@ -96,6 +101,11 @@
       <label class="field" id="reason-field">
         <span>Reason</span>
         <select id="editor-reason"></select>
+      </label>
+
+      <label class="field" id="range-field">
+        <span>Through (optional — mark a whole trip at once)</span>
+        <input type="date" id="editor-end" />
       </label>
 
       <div class="modal-actions">

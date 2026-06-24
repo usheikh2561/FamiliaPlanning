@@ -99,6 +99,11 @@ button.ghost:hover { background: #e0e7ff; }
 .nav-btn { background: #eef2ff; color: var(--indigo-dark); font-size: 1.3rem; line-height: 1; padding: 0.2rem 0.75rem; }
 .nav-btn:hover { background: #e0e7ff; }
 
+.view-toggle { display: inline-flex; gap: 0; margin: 0.2rem 0 0.6rem; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+.view-toggle button { background: white; color: var(--indigo-dark); font-size: 0.85rem; padding: 0.4rem 0.9rem; border-radius: 0; }
+.view-toggle button:hover { background: #eef2ff; }
+.view-toggle button.active { background: var(--indigo); color: white; }
+
 .cal-weekdays {
   display: grid; grid-template-columns: repeat(7, 1fr);
   gap: 4px; margin: 0.6rem 0 4px; text-align: center;
@@ -125,9 +130,14 @@ button.ghost:hover { background: #e0e7ff; }
 .day.past { opacity: 0.45; }
 .day.today { border-color: var(--indigo); border-width: 2px; }
 
-/* Your own status tints your calendar */
+/* "My calendar" mode: your own status tints your calendar */
 .day.mine-busy  { background: var(--busy-bg); }
 .day.mine-maybe { background: var(--maybe-bg); }
+
+/* "Everyone" mode: heat-map of the whole family's availability */
+.day.group-allfree { background: var(--free-bg); border-color: var(--free); }
+.day.group-some    { background: var(--maybe-bg); }
+.day.group-none    { background: var(--busy-bg); }
 
 .day-num { font-weight: 700; font-size: 0.85rem; }
 .day-icons { display: flex; flex-wrap: wrap; gap: 1px; line-height: 1; }

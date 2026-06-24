@@ -163,6 +163,7 @@ let store;
 let state = { members: [], entries: {} };
 let currentMemberId = null;          // whose calendar you're editing
 let editDate = null;                 // date currently open in the editor
+let viewMode = "mine";               // "mine" = your status; "everyone" = group heat-map
 const view = { year: 0, month: 0 };  // which month the calendar shows
 
 function entryFor(memberId, date) {
@@ -304,12 +305,20 @@ function renderCalendar() {
     if (date < today) cell.classList.add("past");
     if (date === today) cell.classList.add("today");
 
-    // Your own status tints the cell so marking feels personal.
-    const myEntry = currentMemberId ? entryFor(currentMemberId, date) : null;
-    if (myEntry) cell.classList.add("mine-" + myEntry.status);
-
     // Group info: who's busy/maybe that day (everyone).
     const t = tallyDate(date);
+
+    // How the cell is tinted depends on the view mode.
+    if (viewMode === "mine") {
+      // Your own status tints the cell, so marking feels personal.
+      const myEntry = currentMemberId ? entryFor(currentMemberId, date) : null;
+      if (myEntry) cell.classList.add("mine-" + myEntry.status);
+    } else if (t.total > 0) {
+      // "Everyone" = a heat-map of how free the whole family is.
+      if (t.free === t.total) cell.classList.add("group-allfree");
+      else if (t.free === 0) cell.classList.add("group-none");
+      else cell.classList.add("group-some");
+    }
 
     // Top: date number + (if everyone free with a real family) a check.
     const num = document.createElement("div");
@@ -338,8 +347,9 @@ function renderCalendar() {
       cell.appendChild(icons);
     }
 
-    // Bottom: free count, but only when there's a conflict to flag.
-    if (t.total > 0 && (t.busy > 0 || t.maybe > 0)) {
+    // Bottom: free count. Always shown in "Everyone" mode; in "My
+    // calendar" mode only when there's a conflict worth flagging.
+    if (t.total > 0 && (viewMode === "everyone" || t.busy > 0 || t.maybe > 0)) {
       const foot = document.createElement("div");
       foot.className = "day-foot";
       foot.textContent = `${t.free}/${t.total} free`;
@@ -388,8 +398,14 @@ function openEditor(date) {
   const reasonSel = document.getElementById("editor-reason");
   statusSel.value = existing ? existing.status : "free";
   reasonSel.value = existing && existing.reason ? existing.reason : "work";
-  toggleReasonField();
 
+  // End-date field defaults to this same day (= single day). Pick a
+  // later date to mark a whole trip in one go.
+  const endInput = document.getElementById("editor-end");
+  endInput.min = date;
+  endInput.value = date;
+
+  toggleReasonField();
   document.getElementById("editor-overlay").classList.remove("hidden");
 }
 
@@ -409,21 +425,43 @@ async function saveEditor() {
   if (!editDate || !currentMemberId) return closeEditor();
   const status = document.getElementById("editor-status").value;
   const reason = document.getElementById("editor-reason").value;
+  const endDate = document.getElementById("editor-end").value || editDate;
 
-  const key = `${currentMemberId}|${editDate}`;
-  if (status === "free") delete state.entries[key];
-  else state.entries[key] = { status, reason };
+  // Every day from the start through the (optional) end date.
+  const dates = datesBetween(editDate, endDate);
+  const member = currentMemberId;
 
+  // Update the screen right away (feels instant), then save each day.
+  for (const date of dates) {
+    const key = `${member}|${date}`;
+    if (status === "free") delete state.entries[key];
+    else state.entries[key] = { status, reason };
+  }
   renderCalendar();
   renderSummary();
   closeEditor();
 
   try {
-    await store.setEntry(currentMemberId, editDate, status, reason);
+    await Promise.all(
+      dates.map((date) => store.setEntry(member, date, status, reason))
+    );
   } catch (err) {
     console.error("Could not save:", err);
     alert("Hmm, that didn't save. Check your internet and try again.");
   }
+}
+
+// All ISO dates from start to end (inclusive). Capped for safety.
+function datesBetween(startISO, endISO) {
+  if (endISO < startISO) endISO = startISO;
+  const out = [];
+  const cur = new Date(startISO + "T00:00:00");
+  const end = new Date(endISO + "T00:00:00");
+  for (let i = 0; i < 366 && cur <= end; i++) {
+    out.push(isoFromYMD(cur.getFullYear(), cur.getMonth(), cur.getDate()));
+    cur.setDate(cur.getDate() + 1);
+  }
+  return out;
 }
 
 // ------------------------------------------------------------
@@ -505,6 +543,20 @@ function wireUpControls() {
 
   document.getElementById("prev-month").addEventListener("click", () => changeMonth(-1));
   document.getElementById("next-month").addEventListener("click", () => changeMonth(1));
+
+  // View toggle: "My calendar" vs "Everyone".
+  document.querySelectorAll("#view-toggle button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      viewMode = btn.dataset.mode;
+      document.querySelectorAll("#view-toggle button")
+        .forEach((b) => b.classList.toggle("active", b === btn));
+      document.getElementById("cal-hint").textContent =
+        viewMode === "mine"
+          ? 'Click any day to set your status. Default is "Free" until you mark otherwise.'
+          : "Green = everyone free, amber = some free, red = no one free. Click a day to edit your own status.";
+      renderCalendar();
+    });
+  });
 
   document.getElementById("editor-status").addEventListener("change", toggleReasonField);
   document.getElementById("editor-save").addEventListener("click", saveEditor);

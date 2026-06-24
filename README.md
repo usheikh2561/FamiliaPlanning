@@ -15,6 +15,10 @@ for planning trips together.
 - **Reasons with icons** — say *why* a day is busy (work 💼, vacation 🏖️,
   wedding 💒, visiting family 👪, and more), shown right on the calendar with a legend.
 - **Dropdown editor** — click any day to set Free / Maybe / Busy and a reason.
+- **Multi-day ranges** — mark a whole trip or busy week in one go with an optional
+  "through" date.
+- **Two views** — toggle between **My calendar** (edit your own days) and
+  **Everyone** (a green/amber/red heat-map of the whole family's availability).
 - **"Best upcoming days" suggestions** that rank the next ~2 months by how many
   people are free, updating live.
 - **Works instantly on your device**, and connects to a **free shared cloud
