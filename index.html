@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- This makes the page look good on phones, not just laptops. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FamiliaPlanning — Find a weekend that works for everyone</title>
+
+  <!-- These two lines let your family "Add to Home Screen" so it feels like an app. -->
+  <meta name="theme-color" content="#4f46e5" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>📅 FamiliaPlanning</h1>
+    <p class="tagline">Find a weekend that works for the whole family.</p>
+    <!-- This little badge tells you whether you're saving to the cloud or just this device. -->
+    <p id="storage-status" class="storage-status">Checking storage…</p>
+  </header>
+
+  <main>
+    <!-- ===== Best weekends summary ===== -->
+    <section class="panel" id="summary-panel">
+      <h2>🏆 Best weekends right now</h2>
+      <p class="hint">Ranked by how many people are free. Update the grid below and this updates automatically.</p>
+      <div id="summary" class="summary-list">
+        <p class="empty">Add some people and mark a few weekends to see suggestions.</p>
+      </div>
+    </section>
+
+    <!-- ===== Add family members ===== -->
+    <section class="panel">
+      <h2>👨‍👩‍👧‍👦 Who's planning?</h2>
+      <form id="add-member-form" class="inline-form">
+        <input
+          id="member-name"
+          type="text"
+          placeholder="Add a name (e.g. Mom, Umair, Sara)"
+          autocomplete="off"
+          maxlength="30"
+          required
+        />
+        <button type="submit">Add person</button>
+      </form>
+      <ul id="member-list" class="member-list"></ul>
+    </section>
+
+    <!-- ===== The availability grid ===== -->
+    <section class="panel">
+      <h2>🗓️ Mark your weekends</h2>
+      <p class="hint">
+        Tap a cell to cycle through:
+        <span class="legend free">Free</span>
+        <span class="legend maybe">Maybe</span>
+        <span class="legend busy">Busy</span>
+        <span class="legend unknown">— (not set)</span>
+      </p>
+      <div class="table-wrap">
+        <table id="grid">
+          <thead><tr id="grid-head"></tr></thead>
+          <tbody id="grid-body"></tbody>
+        </table>
+      </div>
+      <p id="grid-empty" class="empty">Add at least one person above to start planning.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Built for the family. Your data stays in your own browser until you connect the cloud — see <code>SETUP.md</code>.</p>
+  </footer>
+
+  <!-- The app's brain. type="module" lets us use modern, clean JavaScript. -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
