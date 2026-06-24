@@ -83,13 +83,27 @@ const LocalStore = {
 };
 
 // ---- Store B: Supabase cloud (shared with the family) ----
+// Supabase doesn't throw on errors — it returns { data, error }. This
+// helper turns a failed call into a real error so we never silently
+// "save" something that didn't actually save.
+function check(resp, what) {
+  if (resp.error) {
+    throw new Error(`${what} failed — ${resp.error.message} (${resp.error.code || "?"})`);
+  }
+  return resp.data;
+}
+
 function makeSupabaseStore(client) {
   return {
     async load() {
-      const [{ data: members }, { data: rows }] = await Promise.all([
-        client.from("members").select("id, name").order("created_at"),
-        client.from("entries").select("member_id, date, status, reason"),
-      ]);
+      const members = check(
+        await client.from("members").select("id, name").order("created_at"),
+        "Loading people"
+      );
+      const rows = check(
+        await client.from("entries").select("member_id, date, status, reason"),
+        "Loading days"
+      );
       const entries = {};
       for (const r of rows || []) {
         entries[`${r.member_id}|${r.date}`] = { status: r.status, reason: r.reason };
@@ -97,22 +111,28 @@ function makeSupabaseStore(client) {
       return { members: members || [], entries };
     },
     async addMember(name) {
-      const { data, error } = await client
-        .from("members").insert({ name }).select("id, name").single();
-      if (error) throw error;
-      return data;
+      return check(
+        await client.from("members").insert({ name }).select("id, name").single(),
+        "Adding a person"
+      );
     },
     async removeMember(id) {
-      await client.from("entries").delete().eq("member_id", id);
-      await client.from("members").delete().eq("id", id);
+      check(await client.from("entries").delete().eq("member_id", id), "Removing days");
+      check(await client.from("members").delete().eq("id", id), "Removing a person");
     },
     async setEntry(memberId, date, status, reason) {
       if (status === "free") {
-        await client.from("entries").delete().match({ member_id: memberId, date });
+        check(
+          await client.from("entries").delete().match({ member_id: memberId, date }),
+          "Clearing a day"
+        );
       } else {
-        await client.from("entries").upsert(
-          { member_id: memberId, date, status, reason: reason || null },
-          { onConflict: "member_id,date" }
+        check(
+          await client.from("entries").upsert(
+            { member_id: memberId, date, status, reason: reason || null },
+            { onConflict: "member_id,date" }
+          ),
+          "Saving a day"
         );
       }
     },
@@ -190,7 +210,13 @@ function tallyDate(date) {
 // ------------------------------------------------------------
 async function start() {
   store = await chooseStore();
-  state = await store.load();
+  try {
+    state = await store.load();
+  } catch (err) {
+    console.error(err);
+    setStorageStatus("⚠️ Connected, but couldn't load data — " + err.message);
+    state = { members: [], entries: {} };
+  }
 
   const now = new Date();
   view.year = now.getFullYear();
@@ -256,7 +282,14 @@ function renderMemberControls() {
 async function addMember(name) {
   const clean = name.trim();
   if (!clean) return;
-  const member = await store.addMember(clean);
+  let member;
+  try {
+    member = await store.addMember(clean);
+  } catch (err) {
+    console.error(err);
+    alert("Couldn't add that person.\n\n" + err.message);
+    return;
+  }
   state.members.push(member);
   currentMemberId = member.id; // editing the person you just added is handy
   renderAll();
@@ -494,7 +527,7 @@ async function saveEditor() {
     );
   } catch (err) {
     console.error("Could not save:", err);
-    alert("Hmm, that didn't save. Check your internet and try again.");
+    alert("That didn't save.\n\n" + err.message);
   }
 }
 
