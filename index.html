@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- This makes the page look good on phones, not just laptops. -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FamiliaPlanning — Find a weekend that works for everyone</title>
+  <title>FamiliaPlanning — Find days that work for everyone</title>
 
-  <!-- These two lines let your family "Add to Home Screen" so it feels like an app. -->
   <meta name="theme-color" content="#4f46e5" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>" />
 
@@ -15,63 +13,102 @@
 <body>
   <header class="site-header">
     <h1>📅 FamiliaPlanning</h1>
-    <p class="tagline">Find a weekend that works for the whole family.</p>
-    <!-- This little badge tells you whether you're saving to the cloud or just this device. -->
+    <p class="tagline">Everyone marks the days they're <strong>busy</strong> — the app finds the days that work for the whole family.</p>
     <p id="storage-status" class="storage-status">Checking storage…</p>
   </header>
 
   <main>
-    <!-- ===== Best weekends summary ===== -->
+    <!-- ===== Best days summary ===== -->
     <section class="panel" id="summary-panel">
-      <h2>🏆 Best weekends right now</h2>
-      <p class="hint">Ranked by how many people are free. Update the grid below and this updates automatically.</p>
+      <h2>🏆 Best upcoming days</h2>
+      <p class="hint">Days when the most people are free (looking ~2 months ahead). Updates as people fill in their busy days.</p>
       <div id="summary" class="summary-list">
-        <p class="empty">Add some people and mark a few weekends to see suggestions.</p>
+        <p class="empty">Add the family below, then mark your busy days to see the best options.</p>
       </div>
     </section>
 
-    <!-- ===== Add family members ===== -->
+    <!-- ===== Who are you? ===== -->
     <section class="panel">
-      <h2>👨‍👩‍👧‍👦 Who's planning?</h2>
+      <h2>👨‍👩‍👧‍👦 The family</h2>
+      <p class="hint">Pick who you are to edit your own days. Add everyone who's coming.</p>
+
+      <div class="who-row">
+        <label for="current-member">I am:</label>
+        <select id="current-member"></select>
+      </div>
+
       <form id="add-member-form" class="inline-form">
-        <input
-          id="member-name"
-          type="text"
-          placeholder="Add a name (e.g. Mom, Umair, Sara)"
-          autocomplete="off"
-          maxlength="30"
-          required
-        />
+        <input id="member-name" type="text" placeholder="Add a name (e.g. Mom, Umair, Sara)"
+               autocomplete="off" maxlength="30" required />
         <button type="submit">Add person</button>
       </form>
       <ul id="member-list" class="member-list"></ul>
     </section>
 
-    <!-- ===== The availability grid ===== -->
+    <!-- ===== Month calendar ===== -->
     <section class="panel">
-      <h2>🗓️ Mark your weekends</h2>
-      <p class="hint">
-        Tap a cell to cycle through:
-        <span class="legend free">Free</span>
-        <span class="legend maybe">Maybe</span>
-        <span class="legend busy">Busy</span>
-        <span class="legend unknown">— (not set)</span>
-      </p>
-      <div class="table-wrap">
-        <table id="grid">
-          <thead><tr id="grid-head"></tr></thead>
-          <tbody id="grid-body"></tbody>
-        </table>
+      <div class="cal-header">
+        <button id="prev-month" class="nav-btn" title="Previous month">‹</button>
+        <h2 id="cal-title">Month</h2>
+        <button id="next-month" class="nav-btn" title="Next month">›</button>
       </div>
-      <p id="grid-empty" class="empty">Add at least one person above to start planning.</p>
+      <p class="hint" id="cal-hint">Click any day to set your status. Default is "Free" until you mark otherwise.</p>
+
+      <div class="cal-weekdays">
+        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+        <span>Thu</span><span>Fri</span><span>Sat</span>
+      </div>
+      <div id="calendar" class="calendar"></div>
+    </section>
+
+    <!-- ===== Legend ===== -->
+    <section class="panel">
+      <h2>🔖 Legend</h2>
+      <div class="legend-block">
+        <h3>Status</h3>
+        <div class="legend-row">
+          <span class="legend free">Free</span>
+          <span class="legend maybe">Maybe</span>
+          <span class="legend busy">Busy</span>
+        </div>
+      </div>
+      <div class="legend-block">
+        <h3>Why busy? (icons)</h3>
+        <div id="reason-legend" class="legend-row reasons"></div>
+      </div>
     </section>
   </main>
 
+  <!-- ===== Day editor (pop-up) ===== -->
+  <div id="editor-overlay" class="overlay hidden">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3 id="editor-title">Set your day</h3>
+
+      <label class="field">
+        <span>Status</span>
+        <select id="editor-status">
+          <option value="free">Free</option>
+          <option value="maybe">Maybe</option>
+          <option value="busy">Busy</option>
+        </select>
+      </label>
+
+      <label class="field" id="reason-field">
+        <span>Reason</span>
+        <select id="editor-reason"></select>
+      </label>
+
+      <div class="modal-actions">
+        <button id="editor-cancel" class="ghost">Cancel</button>
+        <button id="editor-save">Save</button>
+      </div>
+    </div>
+  </div>
+
   <footer class="site-footer">
-    <p>Built for the family. Your data stays in your own browser until you connect the cloud — see <code>SETUP.md</code>.</p>
+    <p>Your data stays in your own browser until you connect the cloud — see <code>SETUP.md</code>.</p>
   </footer>
 
-  <!-- The app's brain. type="module" lets us use modern, clean JavaScript. -->
   <script type="module" src="app.js"></script>
 </body>
 </html>

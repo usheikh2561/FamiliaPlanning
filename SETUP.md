@@ -19,8 +19,9 @@ The app works immediately, saving data in your own browser.
 >   `python3 -m http.server 8000`, then visit **http://localhost:8000**
 > - Or install the free "Live Server" extension in VS Code and click "Go Live".
 
-At this point: add a couple of names, tap some weekend cells, and watch the
-"Best weekends" panel update. This data lives only on your device for now.
+At this point: add a couple of names, pick who you are, and click a few days to
+mark yourself busy. Watch the "Best upcoming days" panel update. This data lives
+only on your device for now.
 
 ---
 

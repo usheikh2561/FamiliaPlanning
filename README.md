@@ -5,20 +5,26 @@ back-and-forth. Everyone marks which weekends they're **Free / Maybe / Busy**, a
 the app automatically suggests the weekends that work for the most people — perfect
 for planning trips together.
 
-## What it does (version 1)
+## What it does
 
-- **Add family members** by name.
-- **Weekend availability grid** — the next 12 weekends, where each person taps
-  Free / Maybe / Busy.
-- **"Best weekends" suggestions** that rank weekends by how many people are free,
-  updating live as answers come in.
+- **Add family members** by name and pick "who you are" to edit your own days.
+- **Full month calendar** (weekdays *and* weekends) you can page through, ahead as
+  far as you like.
+- **Mark when you're busy, not when you're free.** Everyone is free by default;
+  you only mark the days you *can't* make it — and the app figures out the rest.
+- **Reasons with icons** — say *why* a day is busy (work 💼, vacation 🏖️,
+  wedding 💒, visiting family 👪, and more), shown right on the calendar with a legend.
+- **Dropdown editor** — click any day to set Free / Maybe / Busy and a reason.
+- **"Best upcoming days" suggestions** that rank the next ~2 months by how many
+  people are free, updating live.
 - **Works instantly on your device**, and connects to a **free shared cloud
   database** so the whole family sees one calendar from their own phones.
 
 ## Try it in 2 minutes
 
-Open `index.html` in your browser (see `SETUP.md` if the page looks blank), add a
-couple of names, and start tapping weekends. No accounts needed to test.
+Open the app (see `SETUP.md`), add a couple of names, pick who you are, and click a
+few days to mark yourself busy. Watch the "Best upcoming days" panel react. No
+accounts needed to test.
 
 ## Share it with the family
 
