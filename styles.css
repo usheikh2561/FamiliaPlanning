@@ -1,0 +1,201 @@
+/* ============================================================
+   FamiliaPlanning styles
+   Beginner notes:
+   - Colors are defined once as "variables" at the top so you can
+     re-theme the whole app by changing them in one place.
+   - Everything is mobile-friendly; the grid scrolls sideways on
+     small phones instead of squishing.
+   ============================================================ */
+
+:root {
+  --indigo: #4f46e5;
+  --indigo-dark: #3730a3;
+  --bg: #f5f6fb;
+  --panel: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+
+  --free: #16a34a;     /* green  */
+  --free-bg: #dcfce7;
+  --maybe: #d97706;    /* amber  */
+  --maybe-bg: #fef3c7;
+  --busy: #dc2626;     /* red    */
+  --busy-bg: #fee2e2;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* ---------- Header & footer ---------- */
+.site-header {
+  background: linear-gradient(135deg, var(--indigo), var(--indigo-dark));
+  color: white;
+  padding: 1.5rem 1rem 1.25rem;
+  text-align: center;
+}
+.site-header h1 { margin: 0; font-size: 1.6rem; }
+.tagline { margin: 0.25rem 0 0; opacity: 0.9; }
+.storage-status {
+  margin: 0.6rem auto 0;
+  font-size: 0.8rem;
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+}
+
+.site-footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 2rem 1rem;
+}
+.site-footer code { background: #eef; padding: 0.1rem 0.3rem; border-radius: 4px; }
+
+/* ---------- Layout ---------- */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem 1.2rem;
+  margin-bottom: 1.1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.panel h2 { margin-top: 0; font-size: 1.15rem; }
+.hint { color: var(--muted); font-size: 0.9rem; margin-top: 0; }
+.empty { color: var(--muted); font-style: italic; }
+
+/* ---------- Forms ---------- */
+.inline-form { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.inline-form input[type="text"] {
+  flex: 1 1 220px;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+}
+button {
+  background: var(--indigo);
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+button:hover { background: var(--indigo-dark); }
+
+/* ---------- Member list ---------- */
+.member-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.9rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.member-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #eef2ff;
+  color: var(--indigo-dark);
+  padding: 0.35rem 0.4rem 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.member-list .remove {
+  background: transparent;
+  color: var(--indigo-dark);
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0 0.25rem;
+}
+.member-list .remove:hover { color: var(--busy); }
+
+/* ---------- Legend ---------- */
+.legend {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin: 0 0.1rem;
+}
+.legend.free { background: var(--free-bg); color: var(--free); }
+.legend.maybe { background: var(--maybe-bg); color: var(--maybe); }
+.legend.busy { background: var(--busy-bg); color: var(--busy); }
+.legend.unknown { background: #f3f4f6; color: var(--muted); }
+
+/* ---------- Grid ---------- */
+.table-wrap { overflow-x: auto; }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 360px;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.5rem;
+  text-align: center;
+}
+thead th {
+  background: #f9fafb;
+  font-size: 0.85rem;
+  position: sticky;
+  top: 0;
+}
+.weekend-cell {
+  text-align: left;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.weekend-cell small { display: block; color: var(--muted); font-weight: 400; }
+
+/* The clickable availability cells */
+.cell-btn {
+  width: 100%;
+  min-width: 64px;
+  padding: 0.45rem 0.3rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 0.85rem;
+  background: #f3f4f6;
+  color: var(--muted);
+}
+.cell-btn.free  { background: var(--free-bg);  color: var(--free); }
+.cell-btn.maybe { background: var(--maybe-bg); color: var(--maybe); }
+.cell-btn.busy  { background: var(--busy-bg);  color: var(--busy); }
+
+/* ---------- Summary ---------- */
+.summary-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  background: #f9fafb;
+  border: 1px solid var(--border);
+}
+.summary-item.top { border-color: var(--free); background: var(--free-bg); }
+.summary-item .date { font-weight: 700; }
+.summary-item .tally { font-size: 0.85rem; color: var(--muted); }
+.summary-item .tally strong { color: var(--free); }
