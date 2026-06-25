@@ -8,7 +8,9 @@
   <meta name="theme-color" content="#4f46e5" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>" />
 
-  <link rel="stylesheet" href="styles.css" />
+  <!-- The ?v= number forces browsers to fetch fresh CSS/JS after an
+       update instead of showing a cached old copy. Bump it on changes. -->
+  <link rel="stylesheet" href="styles.css?v=20260625" />
 
   <!-- Apply the saved (or system) theme BEFORE the page paints, so there's
        no white flash for people who prefer dark mode. -->
@@ -134,6 +136,6 @@
     <p>Your data stays in your own browser until you connect the cloud — see <code>SETUP.md</code>.</p>
   </footer>
 
-  <script type="module" src="app.js"></script>
+  <script type="module" src="app.js?v=20260625"></script>
 </body>
 </html>
