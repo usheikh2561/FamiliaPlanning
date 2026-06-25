@@ -13,9 +13,35 @@
   --muted: #6b7280;
   --border: #e5e7eb;
 
+  /* surfaces (so dark mode can override them in one place) */
+  --input-bg: #ffffff;
+  --subtle-bg: #f9fafb;
+  --weekend-bg: #fafafe;
+  --accent-soft: #eef2ff;        /* soft indigo chips/buttons */
+  --accent-soft-text: #3730a3;
+
   --free: #16a34a;     --free-bg: #dcfce7;
   --maybe: #d97706;    --maybe-bg: #fef3c7;
   --busy: #dc2626;     --busy-bg: #fee2e2;
+}
+
+/* ---------- Dark theme ---------- */
+:root[data-theme="dark"] {
+  --bg: #0f172a;
+  --panel: #1e293b;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --border: #334155;
+
+  --input-bg: #243449;
+  --subtle-bg: #223048;
+  --weekend-bg: #1a2740;
+  --accent-soft: #312e81;
+  --accent-soft-text: #c7d2fe;
+
+  --free: #4ade80;     --free-bg: #14532d;
+  --maybe: #fbbf24;    --maybe-bg: #4a3209;
+  --busy: #f87171;     --busy-bg: #4c1d1d;
 }
 
 * { box-sizing: border-box; }
@@ -49,7 +75,18 @@ body {
 .site-footer {
   text-align: center; color: var(--muted); font-size: 0.85rem; padding: 2rem 1rem;
 }
-.site-footer code { background: #eef; padding: 0.1rem 0.3rem; border-radius: 4px; }
+.site-footer code { background: var(--accent-soft); color: var(--accent-soft-text); padding: 0.1rem 0.3rem; border-radius: 4px; }
+
+/* Light/dark toggle button (top-right of the header) */
+.site-header { position: relative; }
+.theme-toggle {
+  position: absolute; top: 0.9rem; right: 0.9rem;
+  background: rgba(255, 255, 255, 0.18); color: white;
+  border: none; border-radius: 999px;
+  width: 2.1rem; height: 2.1rem; padding: 0;
+  font-size: 1.05rem; line-height: 1; cursor: pointer;
+}
+.theme-toggle:hover { background: rgba(255, 255, 255, 0.3); }
 
 /* ---------- Layout ---------- */
 main { max-width: 940px; margin: 0 auto; padding: 1rem; }
@@ -70,8 +107,9 @@ main { max-width: 940px; margin: 0 auto; padding: 1rem; }
 .who-row label { font-weight: 600; }
 select {
   padding: 0.5rem 0.6rem; border: 1px solid var(--border);
-  border-radius: 10px; font-size: 1rem; background: white; min-width: 160px;
+  border-radius: 10px; font-size: 1rem; background: var(--input-bg); color: var(--text); min-width: 160px;
 }
+input[type="text"], input[type="date"] { background: var(--input-bg); color: var(--text); }
 .inline-form { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 .inline-form input[type="text"] {
   flex: 1 1 220px; padding: 0.6rem 0.75rem;
@@ -82,27 +120,27 @@ button {
   padding: 0.6rem 1rem; border-radius: 10px; font-size: 1rem; cursor: pointer;
 }
 button:hover { background: var(--indigo-dark); }
-button.ghost { background: #eef2ff; color: var(--indigo-dark); }
-button.ghost:hover { background: #e0e7ff; }
+button.ghost { background: var(--accent-soft); color: var(--accent-soft-text); }
+button.ghost:hover { filter: brightness(0.95); }
 
 .member-list { list-style: none; padding: 0; margin: 0.9rem 0 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .member-list li {
   display: flex; align-items: center; gap: 0.4rem;
-  background: #eef2ff; color: var(--indigo-dark);
+  background: var(--accent-soft); color: var(--accent-soft-text);
   padding: 0.35rem 0.4rem 0.35rem 0.75rem; border-radius: 999px; font-weight: 600;
 }
-.member-list .remove { background: transparent; color: var(--indigo-dark); border: none; cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 0 0.25rem; }
+.member-list .remove { background: transparent; color: var(--accent-soft-text); border: none; cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 0 0.25rem; }
 .member-list .remove:hover { color: var(--busy); }
 
 /* ---------- Calendar ---------- */
 .cal-header { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
 .cal-header h2 { margin: 0; }
-.nav-btn { background: #eef2ff; color: var(--indigo-dark); font-size: 1.3rem; line-height: 1; padding: 0.2rem 0.75rem; }
-.nav-btn:hover { background: #e0e7ff; }
+.nav-btn { background: var(--accent-soft); color: var(--accent-soft-text); font-size: 1.3rem; line-height: 1; padding: 0.2rem 0.75rem; }
+.nav-btn:hover { filter: brightness(0.95); }
 
 .view-toggle { display: inline-flex; gap: 0; margin: 0.2rem 0 0.6rem; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
-.view-toggle button { background: white; color: var(--indigo-dark); font-size: 0.85rem; padding: 0.4rem 0.9rem; border-radius: 0; }
-.view-toggle button:hover { background: #eef2ff; }
+.view-toggle button { background: var(--input-bg); color: var(--accent-soft-text); font-size: 0.85rem; padding: 0.4rem 0.9rem; border-radius: 0; }
+.view-toggle button:hover { background: var(--accent-soft); }
 .view-toggle button.active { background: var(--indigo); color: white; }
 
 .cal-weekdays {
@@ -118,7 +156,7 @@ button.ghost:hover { background: #e0e7ff; }
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 4px 5px;
-  background: white;
+  background: var(--input-bg);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -128,7 +166,7 @@ button.ghost:hover { background: #e0e7ff; }
 .day:hover { box-shadow: 0 0 0 2px var(--indigo); }
 .day.blank { background: transparent; border: none; cursor: default; }
 .day.blank:hover { box-shadow: none; }
-.day.weekend { background: #fafafe; }
+.day.weekend { background: var(--weekend-bg); }
 .day.past { opacity: 0.45; }
 .day.today { border-color: var(--indigo); border-width: 2px; }
 
@@ -185,12 +223,12 @@ button.ghost:hover { background: #e0e7ff; }
 .summary-list { display: flex; flex-direction: column; gap: 0.5rem; }
 .summary-item {
   display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
-  padding: 0.6rem 0.9rem; border-radius: 10px; background: #f9fafb; border: 1px solid var(--border);
+  padding: 0.6rem 0.9rem; border-radius: 10px; background: var(--subtle-bg); border: 1px solid var(--border);
 }
 .summary-item.top { border-color: var(--free); background: var(--free-bg); }
 .summary-item .date { font-weight: 700; }
 .summary-item .tag {
-  font-size: 0.68rem; background: #eef2ff; color: var(--indigo-dark);
+  font-size: 0.68rem; background: var(--accent-soft); color: var(--accent-soft-text);
   padding: 0.05rem 0.4rem; border-radius: 999px; margin-left: 0.3rem; font-weight: 600;
 }
 .summary-item .tally { font-size: 0.85rem; color: var(--muted); text-align: right; }
@@ -203,7 +241,7 @@ button.ghost:hover { background: #e0e7ff; }
 }
 .overlay.hidden { display: none; }
 .modal {
-  background: white; border-radius: 16px; padding: 1.3rem;
+  background: var(--panel); border-radius: 16px; padding: 1.3rem;
   width: 100%; max-width: 360px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 .modal h3 { margin: 0 0 1rem; }

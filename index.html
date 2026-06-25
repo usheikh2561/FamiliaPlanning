@@ -9,9 +9,22 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>" />
 
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- Apply the saved (or system) theme BEFORE the page paints, so there's
+       no white flash for people who prefer dark mode. -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("familiaplanning-theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <header class="site-header">
+    <button id="theme-toggle" class="theme-toggle" title="Switch light / dark" aria-label="Switch light or dark mode">🌙</button>
     <h1>📅 FamiliaPlanning</h1>
     <p class="tagline">Everyone marks the days they're <strong>busy</strong> — the app finds the days that work for the whole family.</p>
     <p id="storage-status" class="storage-status">Checking storage…</p>

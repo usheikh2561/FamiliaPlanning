@@ -226,8 +226,27 @@ async function start() {
 
   buildReasonOptions();
   buildReasonLegend();
+  initTheme();
   wireUpControls();
   renderAll();
+}
+
+// ------------------------------------------------------------
+//  LIGHT / DARK THEME (a per-device preference, saved locally)
+// ------------------------------------------------------------
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  try { localStorage.setItem("familiaplanning-theme", theme); } catch (e) {}
+  // Show the icon for the mode you'd switch TO.
+  document.getElementById("theme-toggle").textContent = theme === "dark" ? "☀️" : "🌙";
+}
+function initTheme() {
+  const current = document.documentElement.getAttribute("data-theme") || "light";
+  applyTheme(current); // sets the toggle icon to match what's already showing
+  document.getElementById("theme-toggle").addEventListener("click", () => {
+    const now = document.documentElement.getAttribute("data-theme");
+    applyTheme(now === "dark" ? "light" : "dark");
+  });
 }
 
 function renderAll() {
