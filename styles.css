@@ -220,7 +220,7 @@ button.ghost:hover { filter: brightness(0.95); }
 .legend-reason .ic { font-size: 1.1rem; }
 
 /* ---------- Summary ---------- */
-.summary-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.summary-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 340px; overflow-y: auto; padding-right: 2px; }
 .summary-item {
   display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
   padding: 0.6rem 0.9rem; border-radius: 10px; background: var(--subtle-bg); border: 1px solid var(--border);

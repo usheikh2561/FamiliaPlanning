@@ -596,7 +596,7 @@ function renderSummary() {
 
   // Best = most free, then fewest busy, then fewest maybe. Soonest wins ties.
   scored.sort((a, b) => b.free - a.free || a.busy - b.busy || a.maybe - b.maybe);
-  const top = scored.slice(0, 6);
+  const top = scored.slice(0, 30);
 
   container.innerHTML = "";
   top.forEach((s, i) => {
